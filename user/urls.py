@@ -1,5 +1,5 @@
 from django.urls import path
-from .api import CreateUserAPI, UserAPI
+from .api import CreateUserAPI, UserAPI, LoginAPI
 
 from rest_framework_simplejwt.views import (
     TokenObtainSlidingView,
@@ -29,5 +29,10 @@ urlpatterns = [
         'token/refresh',
         TokenRefreshSlidingView.as_view(),
         name='token_refresh'
+    ),
+    path(
+        'login',
+        LoginAPI.as_view(),
+        name='login'
     ),
 ]
