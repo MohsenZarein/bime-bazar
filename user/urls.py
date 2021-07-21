@@ -1,6 +1,11 @@
 from django.urls import path
 from .api import CreateUserAPI, UserAPI
 
+from rest_framework_simplejwt.views import (
+    TokenObtainSlidingView,
+    TokenRefreshSlidingView,
+)
+
 app_name = 'user'
 
 
@@ -14,5 +19,15 @@ urlpatterns = [
         'user',
         UserAPI.as_view(),
         name='user'
-    )
+    ),
+    path(
+        'token/',
+        TokenObtainSlidingView.as_view(),
+        name='token_obtain'
+    ),
+    path(
+        'token/refresh',
+        TokenRefreshSlidingView.as_view(),
+        name='token_refresh'
+    ),
 ]
