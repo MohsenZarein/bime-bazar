@@ -8,6 +8,8 @@ from django.urls import reverse
 
 CREATE_USER_URL = reverse('user:create_user')
 USER_URL = reverse('user:user')
+CREATE_TOKEN_SLIDING = reverse('user:token_obtain')
+CREATE_TOKEN_REFRESH = reverse('user:token_refresh')
 
 
 def create_user(**params):
@@ -65,6 +67,59 @@ class PublicUserAPITest(TestCase):
         """ Test that authentication is required for users """
         response = self.client.get(USER_URL)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+    
+
+    def test_create_token_for_user(self):
+        """ Test that a token is created for the user """
+        payload = {
+            'username':'test',
+            'password':'123456'
+        }
+        create_user(**payload)
+        response = self.client.post(CREATE_TOKEN_SLIDING, payload)
+
+        self.assertIn('token', response.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    
+    def test_create_token_invalid_credentials(self):
+        """ Test that token is not created if invalid credentials are given """
+        create_user(username='test', password='123456')
+        payload = {
+            'username':'test',
+            'password':'wrong'
+        }
+        response = self.client.post(CREATE_TOKEN_SLIDING, payload)
+
+        self.assertNotIn('token', response.data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+    def test_create_token_no_user(self):
+        """ Test that token is not created if user does not exist """
+        payload = {
+            'user':'test',
+            'password':'123456'
+        }
+        response = self.client.post(CREATE_TOKEN_SLIDING, payload)
+
+        self.assertNotIn('token', response.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    
+    def test_create_token_missing_field(self):
+        """ Test that token is not created if missing any field (username and password are required) """
+        payload = {
+            'username':'test',
+            'password':''
+        }
+        response = self.client.post(CREATE_TOKEN_SLIDING, payload)
+
+        self.assertNotIn('token', response.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+    
 
 
 
