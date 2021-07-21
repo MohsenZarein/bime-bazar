@@ -10,6 +10,7 @@ CREATE_USER_URL = reverse('user:create_user')
 USER_URL = reverse('user:user')
 CREATE_TOKEN_SLIDING = reverse('user:token_obtain')
 CREATE_TOKEN_REFRESH = reverse('user:token_refresh')
+LOGIN_URL = reverse('user:login')
 
 
 def create_user(**params):
@@ -117,11 +118,59 @@ class PublicUserAPITest(TestCase):
 
         self.assertNotIn('token', response.data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    
+
+    def test_login_user_succussfuly(self):
+        """ test login user and set a session on browser """
+        payload = {
+            'username':'test',
+            'password':'123456'
+        }
+        create_user(**payload)
+        response = self.client.post(LOGIN_URL, payload)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
+
+    def test_login_user_invalid_credentials(self):
+        """ test logging user with invalid credentials fails """
+        create_user(
+            username="test",
+            password="123456"
+        )
+        payload = {
+            'username':'test',
+            'password':'5555'
+        }
+        response = self.client.post(LOGIN_URL, payload)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+    def test_login_no_user(self):
+        """ Test that login fails if user does not exist """
+        payload = {
+            'user':'test',
+            'password':'123456'
+        }
+        response = self.client.post(LOGIN_URL, payload)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    
+    def test_login_missing_field(self):
+        """ Test that login fails if missing any field (username and password are required) """
+        payload = {
+            'username':'test',
+            'password':''
+        }
+        response = self.client.post(LOGIN_URL, payload)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
 
 
     
-
-
 
 
 class PrivateUserAPITest(TestCase):
