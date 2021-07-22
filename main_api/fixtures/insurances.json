@@ -1,0 +1,16 @@
+[
+{
+  "model": "main_api.insurance",
+  "pk": 1,
+  "fields": {
+    "name": "third-party"
+  }
+},
+{
+  "model": "main_api.insurance",
+  "pk": 2,
+  "fields": {
+    "name": "body"
+  }
+}
+]
