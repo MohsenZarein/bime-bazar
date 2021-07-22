@@ -20,7 +20,7 @@ class Coupon(models.Model):
     probability = models.PositiveSmallIntegerField()
     
     def __str__(self):
-        return self.insurance.name + ' / ' + str(self.amount)
+        return self.insurance.name + ' / ' + str(self.amount) + 'T'
 
 
 
