@@ -3,9 +3,12 @@ from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Insurance, Coupon, UserCoupon
-from .serializers import UserCouponSerializer
+from .serializers import UserCouponSerializer, DateSerializer
 from django.http import Http404
 import random
+from .permissions import IsSuperuser
+from django.db.models import Sum
+
 
 
 class GetRandomCouponAPI(APIView):
@@ -64,6 +67,55 @@ class GetRandomCouponAPI(APIView):
             'massage':'Could not find any coupon'
         }
         return Response(context, status=status.HTTP_204_NO_CONTENT)
+
+
+
+class GetInsuranceCouponInfoAPI(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsSuperuser,]
+
+    def get_object(self, pk):
+
+        try:
+            return Insurance.objects.get(pk=pk)
+        except Insurance.DoesNotExist:
+            raise Http404
+
+
+    def post(self, request, pk):
+        
+        insurance = self.get_object(pk)
+        serializer = DateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        date = serializer.validated_data
+
+        info = UserCoupon.objects.filter(
+            insurance=insurance
+        ).defer(
+            'insurance',
+            'user'
+        )
+        # perform chaining filters on creation date 
+        # field to get proper requested data 
+        if date.get('year'):
+            info = info.filter(created__year=date.get('year'))
+        if date.get('month'):
+            info = info.filter(created__month=date.get('month'))
+        if date.get('day'):
+            info = info.filter(created__day=date.get('day'))
+        if date.get('hour'):
+            info = info.filter(created__hour=date.get('hour'))
+        
+        info = info.aggregate(
+            sum=Sum('amount')
+        )
+        if not info['sum']:
+            info['sum'] = 0
+
+        context = {
+            'sum':str(info['sum'])
+        }
+        return Response(context)
+
 
 
 
