@@ -1,0 +1,65 @@
+[
+{
+  "model": "main_api.coupon",
+  "pk": 1,
+  "fields": {
+    "insurance": 1,
+    "amount": 100000,
+    "probability": 15
+  }
+},
+{
+  "model": "main_api.coupon",
+  "pk": 2,
+  "fields": {
+    "insurance": 1,
+    "amount": 200000,
+    "probability": 30
+  }
+},
+{
+  "model": "main_api.coupon",
+  "pk": 3,
+  "fields": {
+    "insurance": 1,
+    "amount": 1000000,
+    "probability": 30
+  }
+},
+{
+  "model": "main_api.coupon",
+  "pk": 4,
+  "fields": {
+    "insurance": 1,
+    "amount": 150000,
+    "probability": 25
+  }
+},
+{
+  "model": "main_api.coupon",
+  "pk": 5,
+  "fields": {
+    "insurance": 2,
+    "amount": 500000,
+    "probability": 15
+  }
+},
+{
+  "model": "main_api.coupon",
+  "pk": 6,
+  "fields": {
+    "insurance": 2,
+    "amount": 60000,
+    "probability": 45
+  }
+},
+{
+  "model": "main_api.coupon",
+  "pk": 7,
+  "fields": {
+    "insurance": 2,
+    "amount": 200000,
+    "probability": 40
+  }
+}
+]
