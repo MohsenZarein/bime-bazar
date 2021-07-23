@@ -13,6 +13,10 @@ Uses the default Django development server
   $ docker-compose up
   ```
 4. Test it out at http://localhost:8000. The "app" folder is mounted into the container and your code changes apply automatically.
+5. To cleanup 
+  ```bash
+    $ docker-compose down
+   ```
 
 ## Provide initial data for database
 
